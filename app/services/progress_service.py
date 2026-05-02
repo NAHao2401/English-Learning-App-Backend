@@ -40,34 +40,47 @@ def get_progress_summary(db: Session, user: User):
 
 
 def get_lesson_progresses(db: Session, user: User):
-    lessons = db.query(Lesson).order_by(Lesson.lesson_order.asc(), Lesson.id.asc()).all()
+    lessons = (
+        db.query(Lesson)
+        .order_by(Lesson.lesson_order.asc(), Lesson.id.asc())
+        .all()
+    )
+
+    lesson_ids = [lesson.id for lesson in lessons]
+
+    progresses = (
+        db.query(Progress)
+        .filter(
+            Progress.user_id == user.id,
+            Progress.lesson_id.in_(lesson_ids),
+        )
+        .all()
+        if lesson_ids
+        else []
+    )
+
+    progress_map = {
+        progress.lesson_id: progress
+        for progress in progresses
+    }
+
+    completed_lesson_ids = {
+        progress.lesson_id
+        for progress in progresses
+        if progress.status == "completed"
+    }
 
     result = []
 
     for index, lesson in enumerate(lessons):
-        progress = (
-            db.query(Progress)
-            .filter(
-                Progress.user_id == user.id,
-                Progress.lesson_id == lesson.id,
-            )
-            .first()
-        )
+        progress = progress_map.get(lesson.id)
 
         is_locked = lesson.is_locked
 
         if index > 0:
             previous_lesson = lessons[index - 1]
-            previous_progress = (
-                db.query(Progress)
-                .filter(
-                    Progress.user_id == user.id,
-                    Progress.lesson_id == previous_lesson.id,
-                    Progress.status == "completed",
-                )
-                .first()
-            )
-            if previous_progress is None:
+
+            if previous_lesson.id not in completed_lesson_ids:
                 is_locked = True
 
         result.append(
