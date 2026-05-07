@@ -106,3 +106,46 @@ class LessonSubmission(Base):
         server_default=func.now(),
         index=True
     )
+
+class LessonAnswer(Base):
+    __tablename__ = "lesson_answers"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id",
+            "lesson_id",
+            "question_id",
+            name="uq_user_lesson_question_answer"
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True
+    )
+
+    lesson_id: Mapped[int] = mapped_column(
+        ForeignKey("lessons.id"),
+        nullable=False,
+        index=True
+    )
+
+    question_id: Mapped[int] = mapped_column(
+        ForeignKey("questions.id"),
+        nullable=False,
+        index=True
+    )
+
+    answer: Mapped[str] = mapped_column(String(500), nullable=False)
+
+    is_correct: Mapped[bool | None] = mapped_column(nullable=True)
+
+    answered_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        index=True
+    )
