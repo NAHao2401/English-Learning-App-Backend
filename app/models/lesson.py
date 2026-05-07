@@ -17,6 +17,7 @@ class Topic(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     lessons = relationship("Lesson", back_populates="topic")
+    vocabularies = relationship("Vocabulary", back_populates="topic", cascade="all, delete-orphan")
 
 
 class Lesson(Base):
