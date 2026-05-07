@@ -49,11 +49,11 @@ class QuestionResponse(BaseModel):
 
 class SubmitAnswerRequest(BaseModel):
     question_id: int
-    answer: str
+    answer: str = Field(min_length=1, max_length=500)
 
 
 class SubmitLessonRequest(BaseModel):
-    answers: list[SubmitAnswerRequest]
+    answers: list[SubmitAnswerRequest] = Field(min_length=1)
 
 
 class SubmitLessonResponse(BaseModel):
@@ -65,3 +65,5 @@ class SubmitLessonResponse(BaseModel):
     xp_earned: int
     completion_percent: int
     passed: bool
+    streak_count: int
+    message: str
