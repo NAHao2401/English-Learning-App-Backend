@@ -1,4 +1,6 @@
-from pydantic import BaseModel, Field, model_validator
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class VocabularyResponse(BaseModel):
@@ -52,3 +54,30 @@ class SavedVocabularyResponse(BaseModel):
     vocabulary: VocabularyResponse
 
     model_config = {"from_attributes": True}
+
+
+class RateVocabRequest(BaseModel):
+    vocabulary_id: int
+    rating: int
+
+
+class UserVocabularyResponse(BaseModel):
+    id: int
+    vocabulary_id: int
+    is_saved: bool
+    mastery_level: int
+    last_reviewed_at: datetime | None
+    review_count: int
+    next_review_at: datetime | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TopicStudyResponse(BaseModel):
+    """Summary + word lists for study session."""
+
+    topic_id: int
+    total_words: int
+    new_words: list[VocabularyResponse]
+    due_review_words: list[VocabularyResponse]
+    learned_count: int

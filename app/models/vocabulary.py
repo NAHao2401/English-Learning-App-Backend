@@ -21,3 +21,4 @@ class Vocabulary(Base):
 
     topic = relationship("Topic", back_populates="vocabularies")
     saved_vocabularies = relationship("SavedVocabulary", back_populates="vocabulary", cascade="all, delete-orphan")
+    user_vocabularies = relationship("UserVocabulary", back_populates="vocabulary", cascade="all, delete-orphan")

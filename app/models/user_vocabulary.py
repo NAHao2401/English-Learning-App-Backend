@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -34,3 +34,31 @@ class SavedVocabulary(Base):
     user = relationship("User", back_populates="saved_vocabularies")
     vocabulary = relationship("Vocabulary", back_populates="saved_vocabularies")
     topic = relationship("UserTopic", back_populates="saved_vocabularies")
+
+
+class UserVocabulary(Base):
+    __tablename__ = "user_vocabularies"
+    __table_args__ = (
+        UniqueConstraint("user_id", "vocabulary_id", name="uq_user_vocabularies_user_vocab"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    vocabulary_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("vocabularies.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    is_saved: Mapped[bool] = mapped_column(Boolean, default=False)
+    mastery_level: Mapped[int] = mapped_column(Integer, default=0)
+    last_reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    review_count: Mapped[int] = mapped_column(Integer, default=0)
+
+    user = relationship("User", back_populates="user_vocabularies")
+    vocabulary = relationship("Vocabulary", back_populates="user_vocabularies")

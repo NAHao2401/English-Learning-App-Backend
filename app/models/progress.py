@@ -76,6 +76,32 @@ class XpHistory(Base):
     )
 
 
+class ReviewHistory(Base):
+    __tablename__ = "review_histories"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
+
+    vocabulary_id: Mapped[int] = mapped_column(
+        ForeignKey("vocabularies.id"),
+        nullable=False,
+        index=True,
+    )
+
+    result: Mapped[str] = mapped_column(String(20), nullable=False)
+
+    reviewed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        index=True,
+    )
+
+
 class LessonSubmission(Base):
     __tablename__ = "lesson_submissions"
 

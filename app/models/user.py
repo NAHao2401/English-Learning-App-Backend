@@ -1,5 +1,5 @@
-from datetime import datetime, date
-from sqlalchemy import Date, DateTime, Integer, String, func
+from datetime import datetime
+from sqlalchemy import DateTime, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -29,8 +29,6 @@ class User(Base):
 
     streak_count: Mapped[int] = mapped_column(Integer, default=0)
 
-    last_study_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -43,3 +41,4 @@ class User(Base):
 
     user_topics = relationship("UserTopic", back_populates="user", cascade="all, delete-orphan")
     saved_vocabularies = relationship("SavedVocabulary", back_populates="user", cascade="all, delete-orphan")
+    user_vocabularies = relationship("UserVocabulary", back_populates="user", cascade="all, delete-orphan")

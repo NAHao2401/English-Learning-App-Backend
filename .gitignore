@@ -23,3 +23,5 @@ Thumbs.db
 
 # Alembic migrations (nếu dùng)
 alembic/versions/*.pyc
+VOCABULARY_API_NEW.md
+QUICK_START.md
