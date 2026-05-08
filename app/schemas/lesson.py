@@ -67,3 +67,17 @@ class SubmitLessonResponse(BaseModel):
     passed: bool
     streak_count: int
     message: str
+
+class SaveAnswerRequest(BaseModel):
+    question_id: int
+    answer: str = Field(min_length=1, max_length=500)
+
+
+class SaveAnswerResponse(BaseModel):
+    lesson_id: int
+    question_id: int
+    answered_count: int
+    total_questions: int
+    completion_percent: int
+    status: str
+    is_correct: bool | None = None

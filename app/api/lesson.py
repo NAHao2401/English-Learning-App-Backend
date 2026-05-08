@@ -7,6 +7,8 @@ from app.schemas.common import PaginatedResponse
 from app.schemas.lesson import (
     LessonResponse,
     QuestionResponse,
+    SaveAnswerRequest,
+    SaveAnswerResponse,
     SubmitLessonRequest,
     SubmitLessonResponse,
     TopicResponse,
@@ -16,6 +18,7 @@ from app.services.lesson_service import (
     get_lessons,
     get_questions_by_lesson,
     get_topics,
+    save_lesson_answer,
     submit_lesson,
 )
 
@@ -67,8 +70,16 @@ def lesson_questions(
 @router.post("/{lesson_id}/submit", response_model=SubmitLessonResponse)
 def submit_lesson_answers(
     lesson_id: int,
-    request: SubmitLessonRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return submit_lesson(db, current_user, lesson_id, request)
+    return submit_lesson(db, current_user, lesson_id)
+
+@router.post("/{lesson_id}/answers", response_model=SaveAnswerResponse)
+def save_answer(
+    lesson_id: int,
+    request: SaveAnswerRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return save_lesson_answer(db, current_user, lesson_id, request)

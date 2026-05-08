@@ -1,19 +1,18 @@
 from datetime import date, datetime, timedelta, timezone
 from math import ceil
 
-from sqlalchemy import func
 from sqlalchemy.orm import Session, selectinload
 
+from app.api import progress
 from app.core.exceptions import (
     BadRequestException,
-    ForbiddenException,
     NotFoundException,
     TooManyRequestsException,
 )
-from app.models.lesson import AnswerOption, Lesson, Question, Topic
-from app.models.progress import LessonSubmission, Progress, XpHistory
+from app.models.lesson import Lesson, Question, Topic
+from app.models.progress import LessonAnswer, LessonSubmission, Progress, XpHistory
 from app.models.user import User
-from app.schemas.lesson import SubmitLessonRequest
+from app.schemas.lesson import SaveAnswerRequest
 
 
 PASSING_SCORE = 60
@@ -170,7 +169,6 @@ def submit_lesson(
     db: Session,
     user: User,
     lesson_id: int,
-    data: SubmitLessonRequest,
 ):
     lesson = db.query(Lesson).filter(Lesson.id == lesson_id).first()
 
@@ -190,12 +188,27 @@ def submit_lesson(
     if not questions:
         raise BadRequestException("This lesson has no questions")
 
-    _validate_answers(data, questions)
+    saved_answers = (
+        db.query(LessonAnswer)
+        .filter(
+            LessonAnswer.user_id == user.id,
+            LessonAnswer.lesson_id == lesson_id,
+        )
+        .all()
+    )
 
     answer_map = {
         item.question_id: item.answer.strip()
-        for item in data.answers
+        for item in saved_answers
     }
+
+    question_ids = {question.id for question in questions}
+    answered_ids = set(answer_map.keys())
+
+    missing_ids = question_ids - answered_ids
+
+    if missing_ids:
+        raise BadRequestException("You must answer all questions before final submitting")
 
     correct_count = 0
 
@@ -218,7 +231,7 @@ def submit_lesson(
     now = datetime.now(timezone.utc)
 
     progress.status = "completed" if passed else "in_progress"
-    progress.completion_percent = 100 if passed else max(progress.completion_percent, 50)
+    progress.completion_percent = 100 if passed else 99
     progress.highest_score = max(progress.highest_score, score)
     progress.last_accessed_at = now
 
@@ -274,26 +287,6 @@ def submit_lesson(
         "streak_count": user.streak_count or 0,
         "message": "Lesson completed" if passed else "Keep practicing",
     }
-
-
-def _validate_answers(data: SubmitLessonRequest, questions: list[Question]):
-    question_ids = {question.id for question in questions}
-    submitted_ids = [answer.question_id for answer in data.answers]
-    submitted_id_set = set(submitted_ids)
-
-    if len(submitted_ids) != len(submitted_id_set):
-        raise BadRequestException("Duplicate answers are not allowed")
-
-    invalid_ids = submitted_id_set - question_ids
-
-    if invalid_ids:
-        raise BadRequestException("Some answers do not belong to this lesson")
-
-    missing_ids = question_ids - submitted_id_set
-
-    if missing_ids:
-        raise BadRequestException("You must answer all questions before submitting")
-
 
 def _is_answer_correct(question: Question, user_answer: str) -> bool:
     normalized_user_answer = user_answer.strip().lower()
@@ -419,3 +412,97 @@ def _check_submit_cooldown(db: Session, user_id: int, lesson_id: int):
         raise TooManyRequestsException(
             "You are submitting too quickly. Please wait a few seconds."
         )
+    
+def save_lesson_answer(
+    db: Session,
+    user: User,
+    lesson_id: int,
+    data: SaveAnswerRequest,
+):
+    lesson = db.query(Lesson).filter(Lesson.id == lesson_id).first()
+
+    if lesson is None:
+        raise NotFoundException("Lesson not found")
+
+    questions = (
+        db.query(Question)
+        .options(selectinload(Question.answer_options))
+        .filter(Question.lesson_id == lesson_id)
+        .order_by(Question.question_order.asc(), Question.id.asc())
+        .all()
+    )
+
+    if not questions:
+        raise BadRequestException("This lesson has no questions")
+
+    question_map = {question.id: question for question in questions}
+
+    question = question_map.get(data.question_id)
+
+    if question is None:
+        raise BadRequestException("This question does not belong to this lesson")
+
+    user_answer = data.answer.strip()
+    is_correct = _is_answer_correct(question, user_answer)
+
+    existing_answer = (
+        db.query(LessonAnswer)
+        .filter(
+            LessonAnswer.user_id == user.id,
+            LessonAnswer.lesson_id == lesson_id,
+            LessonAnswer.question_id == data.question_id,
+        )
+        .first()
+    )
+
+    if existing_answer:
+        existing_answer.answer = user_answer
+        existing_answer.is_correct = is_correct
+    else:
+        db.add(
+            LessonAnswer(
+                user_id=user.id,
+                lesson_id=lesson_id,
+                question_id=data.question_id,
+                answer=user_answer,
+                is_correct=is_correct,
+            )
+        )
+
+    db.flush()
+
+    progress = _get_or_create_progress(db, user.id, lesson_id)
+
+    answered_count = (
+        db.query(LessonAnswer)
+        .filter(
+            LessonAnswer.user_id == user.id,
+            LessonAnswer.lesson_id == lesson_id,
+        )
+        .count()
+    )
+
+    total_questions = len(questions)
+
+    completion_percent = int((answered_count / total_questions) * 100)
+
+    now = datetime.now(timezone.utc)
+
+    if progress.status != "completed":
+        progress.status = "in_progress" if answered_count > 0 else "not_started"
+        progress.completion_percent = min(completion_percent, 99)
+
+    progress.last_accessed_at = now
+
+    db.commit()
+    db.refresh(progress)
+
+    return {
+        "lesson_id": lesson_id,
+        "question_id": data.question_id,
+        "answered_count": answered_count,
+        "total_questions": total_questions,
+        "completion_percent": progress.completion_percent,
+        "status": progress.status,
+        "is_correct": is_correct,
+    }
