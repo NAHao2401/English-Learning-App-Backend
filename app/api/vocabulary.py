@@ -4,15 +4,20 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user, get_db
 from app.crud.vocabulary_crud import (
     get_due_review_words,
+    get_learned_vocab_list,
     get_new_words,
     get_next_review_at,
     get_topic_progress_map,
+    get_vocab_overview,
     rate_vocabulary,
 )
 from app.models.user import User
 from app.models.vocabulary import Vocabulary
 from app.schemas.lesson import TopicResponse
 from app.schemas.vocabulary import (
+    LearnedVocabItem,
+    LearnedVocabListResponse,
+    MasteryStatsResponse,
     RateVocabRequest,
     SaveVocabularyRequest,
     SavedVocabularyResponse,
@@ -20,6 +25,7 @@ from app.schemas.vocabulary import (
     UserVocabularyResponse,
     UserTopicCreateRequest,
     UserTopicResponse,
+    VocabOverviewResponse,
     VocabularyResponse,
 )
 from app.services.lesson_service import get_topics
@@ -114,8 +120,9 @@ def rate_vocab(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if request.rating not in [1, 3, 5]:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Rating must be 1, 3, or 5")
+    # Accept explicit mastery level 1..5 from client (e.g. current+1 or current-1).
+    if not (1 <= request.rating <= 5):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Rating must be an integer between 1 and 5")
 
     try:
         return rate_vocabulary(db, current_user.id, request.vocabulary_id, request.rating)
@@ -165,3 +172,29 @@ def get_study_session(
         due_review_words=review_words,
         learned_count=learned_count,
     )
+
+
+@router.get("/overview", response_model=VocabOverviewResponse)
+def get_vocab_overview_api(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    GET /vocabularies/overview
+    Returns learned count + mastery stats for VocabScreen header card.
+    Called when user opens Vocab tab.
+    """
+    return get_vocab_overview(db, current_user.id)
+
+
+@router.get("/learned", response_model=LearnedVocabListResponse)
+def get_learned_vocab_api(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    GET /vocabularies/learned
+    Returns all learned words with mastery level + due status.
+    Used by LearnedWordsScreen (tap '>' on learned count card).
+    """
+    return get_learned_vocab_list(db, current_user.id)

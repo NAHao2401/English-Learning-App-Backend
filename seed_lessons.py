@@ -21,10 +21,16 @@ from __future__ import annotations
 import sys
 from typing import Any
 
+from sqlalchemy import inspect
+
 from app.core.security import hash_password
+from app.db.base import Base
 from app.db.session import SessionLocal
+from app.db.session import engine
 from app.models.lesson import AnswerOption, Lesson, Question, Topic
 from app.models.progress import LessonSubmission, Progress, XpHistory
+from app.models.vocabulary import Vocabulary
+from app.models.user_vocabulary import SavedVocabulary, UserVocabulary
 from app.models.user import User
 
 
@@ -366,13 +372,23 @@ SEED_DATA = [
 
 def reset_learning_data(db):
     """Xoá dữ liệu theo thứ tự tránh lỗi khoá ngoại."""
-    db.query(LessonSubmission).delete()
-    db.query(XpHistory).delete()
-    db.query(Progress).delete()
-    db.query(AnswerOption).delete()
-    db.query(Question).delete()
-    db.query(Lesson).delete()
-    db.query(Topic).delete()
+    existing_tables = set(inspect(db.get_bind()).get_table_names())
+
+    def delete_if_exists(model):
+        if model.__tablename__ in existing_tables:
+            db.query(model).delete(synchronize_session=False)
+
+    delete_if_exists(LessonSubmission)
+    delete_if_exists(XpHistory)
+    delete_if_exists(Progress)
+    # delete saved/user vocabularies and vocabularies before topics
+    delete_if_exists(SavedVocabulary)
+    delete_if_exists(UserVocabulary)
+    delete_if_exists(Vocabulary)
+    delete_if_exists(AnswerOption)
+    delete_if_exists(Question)
+    delete_if_exists(Lesson)
+    delete_if_exists(Topic)
     db.commit()
 
 
@@ -468,6 +484,8 @@ def seed_topics_lessons_questions(db):
 
 def main():
     reset = "--reset" in sys.argv
+
+    Base.metadata.create_all(bind=engine)
 
     db = SessionLocal()
     try:

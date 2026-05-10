@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, UniqueConstraint, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
@@ -133,15 +133,15 @@ class LessonSubmission(Base):
         index=True
     )
 
+
 class LessonAnswer(Base):
     __tablename__ = "lesson_answers"
-
     __table_args__ = (
         UniqueConstraint(
             "user_id",
             "lesson_id",
             "question_id",
-            name="uq_user_lesson_question_answer"
+            name="uq_lesson_answers_user_lesson_question",
         ),
     )
 
@@ -150,28 +150,30 @@ class LessonAnswer(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id"),
         nullable=False,
-        index=True
+        index=True,
     )
 
     lesson_id: Mapped[int] = mapped_column(
         ForeignKey("lessons.id"),
         nullable=False,
-        index=True
+        index=True,
     )
 
     question_id: Mapped[int] = mapped_column(
         ForeignKey("questions.id"),
         nullable=False,
-        index=True
+        index=True,
     )
 
-    answer: Mapped[str] = mapped_column(String(500), nullable=False)
-
-    is_correct: Mapped[bool | None] = mapped_column(nullable=True)
+    answer: Mapped[str] = mapped_column(Text, nullable=False)
+    is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
 
     answered_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
-        onupdate=func.now(),
-        index=True
+        index=True,
     )
+
+    user = relationship("User")
+    lesson = relationship("Lesson")
+    question = relationship("Question")

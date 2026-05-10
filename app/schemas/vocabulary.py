@@ -81,3 +81,40 @@ class TopicStudyResponse(BaseModel):
     new_words: list[VocabularyResponse]
     due_review_words: list[VocabularyResponse]
     learned_count: int
+
+
+class MasteryStatsResponse(BaseModel):
+    """5 mastery level counts for the ring chart."""
+    level_1: int = 0   # Chưa biết
+    level_2: int = 0   # Mới học
+    level_3: int = 0   # Nhớ tạm
+    level_4: int = 0   # Nhớ lâu
+    level_5: int = 0   # Thông thạo
+
+
+class VocabOverviewResponse(BaseModel):
+    """Summary card for VocabScreen — 'N từ đã học' block."""
+    learned_count: int           # mastery_level >= 1
+    due_review_count: int        # next_review_at <= now
+    mastery_stats: MasteryStatsResponse
+
+
+class LearnedVocabItem(BaseModel):
+    """One learned word entry for LearnedWordsScreen."""
+    vocabulary_id: int
+    word: str
+    meaning: str
+    pronunciation: str | None
+    mastery_level: int
+    review_count: int
+    last_reviewed_at: datetime | None
+    next_review_at: datetime | None    # computed
+    is_due: bool                       # next_review_at <= now
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LearnedVocabListResponse(BaseModel):
+    items: list[LearnedVocabItem]
+    total: int
+    due_count: int                     # how many are due for review

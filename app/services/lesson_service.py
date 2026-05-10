@@ -365,25 +365,32 @@ def _calculate_xp(
     return xp
 
 
+def _get_last_study_date(user: User) -> date | None:
+    last_activity = user.updated_at
+
+    if last_activity is None:
+        return None
+
+    return last_activity.date()
+
+
 def _update_user_streak(user: User):
     today = date.today()
+    last_study_date = _get_last_study_date(user)
 
-    if user.last_study_date is None:
+    if last_study_date is None:
         user.streak_count = 1
-        user.last_study_date = today
         return
 
-    if user.last_study_date == today:
+    if last_study_date == today:
         return
 
     yesterday = today - timedelta(days=1)
 
-    if user.last_study_date == yesterday:
+    if last_study_date == yesterday:
         user.streak_count = (user.streak_count or 0) + 1
     else:
         user.streak_count = 1
-
-    user.last_study_date = today
 
 
 def _check_submit_cooldown(db: Session, user_id: int, lesson_id: int):
