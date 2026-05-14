@@ -272,6 +272,8 @@ def get_learned_vocab_list(db: Session, user_id: int) -> dict:
             "word":            vocab.word,
             "meaning":         vocab.meaning,
             "pronunciation":   vocab.pronunciation,
+            "audio_url":       vocab.audio_url,
+            "example_audio_url": vocab.example_audio_url,
             "mastery_level":   uv.mastery_level,
             "review_count":    uv.review_count,
             "last_reviewed_at": uv.last_reviewed_at,
