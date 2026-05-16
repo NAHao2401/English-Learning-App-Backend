@@ -12,6 +12,7 @@ from app.crud.vocabulary_crud import (
     rate_vocabulary,
 )
 from app.models.user import User
+from app.models.user_vocabulary import SavedVocabulary, UserVocabulary
 from app.models.vocabulary import Vocabulary
 from app.schemas.lesson import TopicResponse
 from app.schemas.vocabulary import (
@@ -30,11 +31,13 @@ from app.schemas.vocabulary import (
 )
 from app.services.lesson_service import get_topics
 from app.services.vocabulary_service import (
+    get_batch_vocab_progress,
     create_user_topic,
     get_all_vocabularies,
     get_user_topic_vocabularies,
     get_user_topics,
     get_vocabularies_by_topic,
+    get_vocabularies_by_prefix,
     remove_user_topic_vocabulary,
     save_vocabulary,
 )
@@ -57,6 +60,14 @@ def topic_vocabularies(topic_id: int, db: Session = Depends(get_db)):
     return get_vocabularies_by_topic(db, topic_id)
 
 
+@router.get("/search", response_model=list[VocabularyResponse])
+def search_vocabularies(prefix: str, db: Session = Depends(get_db)):
+    """
+    GET /vocabularies/search?prefix=...  — return up to 10 vocabularies whose word starts with prefix
+    """
+    return get_vocabularies_by_prefix(db, prefix)
+
+
 @router.get("/user-topics", response_model=list[UserTopicResponse])
 def list_user_topics(
     db: Session = Depends(get_db),
@@ -77,13 +88,76 @@ def create_topic(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
 
-@router.get("/user-topics/{user_topic_id}/vocabularies", response_model=list[VocabularyResponse])
+@router.get("/user-topics/{user_topic_id}/vocabularies")
 def list_user_topic_vocabularies(
     user_topic_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_user_topic_vocabularies(db, current_user.id, user_topic_id)
+    vocabularies = get_user_topic_vocabularies(db, current_user.id, user_topic_id)
+
+    if not vocabularies:
+        return []
+
+    vocab_ids = [vocabulary.id for vocabulary in vocabularies]
+    progress_map = {
+        user_vocab.vocabulary_id: user_vocab.mastery_level
+        for user_vocab in db.query(UserVocabulary).filter(
+            UserVocabulary.user_id == current_user.id,
+            UserVocabulary.vocabulary_id.in_(vocab_ids),
+        ).all()
+    }
+
+    result = []
+    for vocabulary in vocabularies:
+        item = VocabularyResponse.model_validate(vocabulary).model_dump()
+        item["mastery_level"] = progress_map.get(vocabulary.id, 0)
+        result.append(item)
+
+    return result
+
+
+@router.get("/user-topics/all-saved-words")
+def get_all_user_topic_words(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    GET /vocabularies/user-topics/all-saved-words
+    Returns all vocabularies saved in any of the user's personal topics,
+    sorted by mastery_level ASC (weakest words first).
+    Words with no progress record come first (mastery=0).
+    """
+    saved = db.query(SavedVocabulary).filter(
+        SavedVocabulary.user_id == current_user.id
+    ).all()
+
+    if not saved:
+        return []
+
+    vocab_ids = list({sv.vocabulary_id for sv in saved})
+
+    progress_map = {
+        uv.vocabulary_id: uv.mastery_level
+        for uv in db.query(UserVocabulary).filter(
+            UserVocabulary.user_id == current_user.id,
+            UserVocabulary.vocabulary_id.in_(vocab_ids)
+        ).all()
+    }
+
+    vocabs = db.query(Vocabulary).filter(
+        Vocabulary.id.in_(vocab_ids)
+    ).all()
+
+    result = []
+    for vocab in vocabs:
+        item = VocabularyResponse.model_validate(vocab).model_dump()
+        item["mastery_level"] = progress_map.get(vocab.id, 0)
+        result.append(item)
+
+    result.sort(key=lambda item: (item.get("mastery_level", 0), item.get("id", 0)))
+
+    return result
 
 
 @router.delete("/user-topics/{user_topic_id}/vocabularies/{vocabulary_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -150,6 +224,32 @@ def get_topic_progress(
     return result
 
 
+@router.get("/progress/batch", response_model=dict[int, UserVocabularyResponse])
+def get_batch_progress(
+    vocab_ids: str = "",
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    parsed_vocab_ids: list[int] = []
+    for raw_id in vocab_ids.split(","):
+        raw_id = raw_id.strip()
+        if not raw_id:
+            continue
+        try:
+            parsed_vocab_ids.append(int(raw_id))
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="vocab_ids must be a comma-separated list of integers",
+            ) from exc
+
+    progress_map = get_batch_vocab_progress(db, current_user.id, parsed_vocab_ids)
+    result: dict[int, UserVocabularyResponse] = {}
+    for vocab_id, user_vocab in progress_map.items():
+        result[vocab_id] = UserVocabularyResponse.model_validate(user_vocab)
+    return result
+
+
 @router.get("/progress/topic/{topic_id}/study", response_model=TopicStudyResponse)
 def get_study_session(
     topic_id: int,
@@ -198,3 +298,52 @@ def get_learned_vocab_api(
     Used by LearnedWordsScreen (tap '>' on learned count card).
     """
     return get_learned_vocab_list(db, current_user.id)
+
+
+@router.get("/learned/practice-pool")
+def get_practice_pool(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    GET /vocabularies/learned/practice-pool
+    Returns ALL vocabularies user has learned (mastery_level >= 1),
+    sorted by mastery_level ASC (weakest words first).
+    Used by free practice mode (no due date filter, no mastery changes).
+    """
+    user_vocabs = (
+        db.query(UserVocabulary)
+        .filter(
+            UserVocabulary.user_id == current_user.id,
+            UserVocabulary.mastery_level >= 1,
+        )
+        .order_by(UserVocabulary.mastery_level.asc(), UserVocabulary.vocabulary_id.asc())
+        .all()
+    )
+
+    if not user_vocabs:
+        return []
+
+    ordered_progress = [
+        (user_vocab.vocabulary_id, user_vocab.mastery_level)
+        for user_vocab in user_vocabs
+    ]
+    vocab_ids = [vocab_id for vocab_id, _ in ordered_progress]
+
+    vocabs_map = {
+        vocab.id: vocab
+        for vocab in db.query(Vocabulary).filter(
+            Vocabulary.id.in_(vocab_ids)
+        ).all()
+    }
+
+    result = []
+    for vocab_id, mastery_level in ordered_progress:
+        vocab = vocabs_map.get(vocab_id)
+        if vocab is None:
+            continue
+        item = VocabularyResponse.model_validate(vocab).model_dump()
+        item["mastery_level"] = mastery_level
+        result.append(item)
+
+    return result

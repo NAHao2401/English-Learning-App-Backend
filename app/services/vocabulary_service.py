@@ -1,7 +1,10 @@
+from datetime import timezone
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models.user_vocabulary import SavedVocabulary, UserTopic
+from app.crud.vocabulary_crud import get_next_review_at
+from app.models.user_vocabulary import SavedVocabulary, UserTopic, UserVocabulary
 from app.models.vocabulary import Vocabulary
 from app.schemas.vocabulary import SaveVocabularyRequest
 
@@ -20,6 +23,18 @@ def get_all_vocabularies(db: Session, level: str | None = None):
     if level:
         query = query.filter(Vocabulary.difficulty == level)
     return query.order_by(Vocabulary.id.asc()).all()
+
+
+def get_vocabularies_by_prefix(db: Session, prefix: str):
+    """
+    Return up to 10 vocabularies whose `word` starts with the given prefix (case-insensitive).
+    Each item is a full `Vocabulary` model instance.
+    """
+    if not prefix:
+        return []
+
+    query = db.query(Vocabulary).filter(Vocabulary.word.ilike(f"{prefix}%"))
+    return query.order_by(Vocabulary.id.asc()).limit(10).all()
 
 
 def get_user_topics(db: Session, user_id: int):
@@ -52,6 +67,50 @@ def get_user_topic_vocabularies(db: Session, user_id: int, user_topic_id: int):
         .order_by(Vocabulary.id.asc())
         .all()
     )
+
+
+def get_batch_vocab_progress(db: Session, user_id: int, vocab_ids: list[int]):
+    if not vocab_ids:
+        return {}
+
+    unique_vocab_ids = list(dict.fromkeys(vocab_ids))
+    records = (
+        db.query(UserVocabulary)
+        .filter(
+            UserVocabulary.user_id == user_id,
+            UserVocabulary.vocabulary_id.in_(unique_vocab_ids),
+        )
+        .all()
+    )
+
+    progress_by_vocab_id = {record.vocabulary_id: record for record in records}
+    result: dict[int, UserVocabulary] = {}
+
+    for vocab_id in unique_vocab_ids:
+        user_vocab = progress_by_vocab_id.get(vocab_id)
+        if user_vocab is None:
+            result[vocab_id] = UserVocabulary(
+                id=0,
+                user_id=user_id,
+                vocabulary_id=vocab_id,
+                is_saved=False,
+                mastery_level=0,
+                last_reviewed_at=None,
+                review_count=0,
+            )
+            continue
+
+        if user_vocab.last_reviewed_at is not None and user_vocab.last_reviewed_at.tzinfo is None:
+            user_vocab.last_reviewed_at = user_vocab.last_reviewed_at.replace(tzinfo=timezone.utc)
+
+        user_vocab.__dict__["next_review_at"] = (
+            get_next_review_at(user_vocab.mastery_level, user_vocab.last_reviewed_at)
+            if user_vocab.last_reviewed_at
+            else None
+        )
+        result[vocab_id] = user_vocab
+
+    return result
 
 
 def save_vocabulary(db: Session, user_id: int, request: SaveVocabularyRequest):

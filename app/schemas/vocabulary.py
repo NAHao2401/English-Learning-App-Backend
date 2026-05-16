@@ -108,6 +108,7 @@ class LearnedVocabItem(BaseModel):
     pronunciation: str | None
     audio_url: str | None = None
     example_audio_url: str | None = None
+    example_sentence: str | None = None
     mastery_level: int
     review_count: int
     last_reviewed_at: datetime | None
