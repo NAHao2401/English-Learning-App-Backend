@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import create_access_token, create_refresh_token, hash_password, verify_password
 from app.models.user import User
-from app.schemas.auth import AuthResponse, LoginRequest, RegisterRequest
+from app.schemas.auth import AuthResponse, ChangePasswordRequest, LoginRequest, RegisterRequest
 
 
 def register_user(db: Session, data: RegisterRequest) -> AuthResponse:
@@ -39,3 +39,24 @@ def login_user(db: Session, data: LoginRequest) -> AuthResponse:
         refresh_token=refresh_token,
         user=user
     )
+
+def change_user_password(
+    db: Session,
+    user: User,
+    data: ChangePasswordRequest
+) -> dict:
+    if not verify_password(data.current_password, user.password_hash):
+        raise ValueError("Current password is incorrect")
+
+    if verify_password(data.new_password, user.password_hash):
+        raise ValueError("New password must be different from current password")
+
+    user.password_hash = hash_password(data.new_password)
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return {
+        "message": "Password changed successfully"
+    }

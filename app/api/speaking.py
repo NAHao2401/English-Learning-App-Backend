@@ -4,8 +4,8 @@
   "target_text": "The quick brown fox",
   "spoken_text": "The quick brown dog",
   "score": 75,
-  "is_matched": true,
-  "lesson_id": null   # optional
+  "is_matched": True,
+  "lesson_id": None   # optional
 }
 
 # GET /speaking/practices/me
