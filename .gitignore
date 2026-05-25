@@ -24,3 +24,4 @@ Thumbs.db
 # Alembic migrations (nếu dùng)
 alembic/versions/*.pyc
 *.md
+!README.md

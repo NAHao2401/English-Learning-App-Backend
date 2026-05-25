@@ -1,0 +1,234 @@
+[
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I eat ____ for breakfast.",
+    "correct_answer": "bread",
+    "spoken_text": "I eat bread for breakfast.",
+    "filename": "i_eat_bread_for_breakfast.mp3",
+    "audio_url": "static/audio/question/i_eat_bread_for_breakfast.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I drink ____ every day.",
+    "correct_answer": "water",
+    "spoken_text": "I drink water every day.",
+    "filename": "i_drink_water_every_day.mp3",
+    "audio_url": "static/audio/question/i_drink_water_every_day.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: This coffee is ____.",
+    "correct_answer": "hot",
+    "spoken_text": "This coffee is hot.",
+    "filename": "this_coffee_is_hot.mp3",
+    "audio_url": "static/audio/question/this_coffee_is_hot.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I am ____.",
+    "correct_answer": "hungry",
+    "spoken_text": "I am hungry.",
+    "filename": "i_am_hungry.mp3",
+    "audio_url": "static/audio/question/i_am_hungry.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: The food is ____.",
+    "correct_answer": "delicious",
+    "spoken_text": "The food is delicious.",
+    "filename": "the_food_is_delicious.mp3",
+    "audio_url": "static/audio/question/the_food_is_delicious.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I need a ____.",
+    "correct_answer": "ticket",
+    "spoken_text": "I need a ticket.",
+    "filename": "i_need_a_ticket.mp3",
+    "audio_url": "static/audio/question/i_need_a_ticket.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: Where is the ____?",
+    "correct_answer": "airport",
+    "spoken_text": "Where is the airport?",
+    "filename": "where_is_the_airport.mp3",
+    "audio_url": "static/audio/question/where_is_the_airport.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the phrase: check ____",
+    "correct_answer": "in",
+    "spoken_text": "check in",
+    "filename": "check_in.mp3",
+    "audio_url": "static/audio/question/check_in.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: My room number is ____.",
+    "correct_answer": "five",
+    "spoken_text": "My room number is five.",
+    "filename": "my_room_number_is_five.mp3",
+    "audio_url": "static/audio/question/my_room_number_is_five.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: Turn ____ at the corner.",
+    "correct_answer": "right",
+    "spoken_text": "Turn right at the corner.",
+    "filename": "turn_right_at_the_corner.mp3",
+    "audio_url": "static/audio/question/turn_right_at_the_corner.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: The hotel is ____ the bank.",
+    "correct_answer": "near",
+    "spoken_text": "The hotel is near the bank.",
+    "filename": "the_hotel_is_near_the_bank.mp3",
+    "audio_url": "static/audio/question/the_hotel_is_near_the_bank.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: My name ____ Anna.",
+    "correct_answer": "is",
+    "spoken_text": "My name is Anna.",
+    "filename": "my_name_is_anna.mp3",
+    "audio_url": "static/audio/question/my_name_is_anna.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the phrase: Nice to ____ you.",
+    "correct_answer": "meet",
+    "spoken_text": "Nice to meet you.",
+    "filename": "nice_to_meet_you.mp3",
+    "audio_url": "static/audio/question/nice_to_meet_you.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: Thank ____.",
+    "correct_answer": "you",
+    "spoken_text": "Thank you.",
+    "filename": "thank_you.mp3",
+    "audio_url": "static/audio/question/thank_you.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I am ____ Vietnam.",
+    "correct_answer": "from",
+    "spoken_text": "I am from Vietnam.",
+    "filename": "i_am_from_vietnam.mp3",
+    "audio_url": "static/audio/question/i_am_from_vietnam.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I am ____.",
+    "correct_answer": "sorry",
+    "spoken_text": "I am sorry.",
+    "filename": "i_am_sorry.mp3",
+    "audio_url": "static/audio/question/i_am_sorry.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: Please help ____.",
+    "correct_answer": "me",
+    "spoken_text": "Please help me.",
+    "filename": "please_help_me.mp3",
+    "audio_url": "static/audio/question/please_help_me.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: This is my ____.",
+    "correct_answer": "family",
+    "spoken_text": "This is my family.",
+    "filename": "this_is_my_family.mp3",
+    "audio_url": "static/audio/question/this_is_my_family.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: My ____ is kind.",
+    "correct_answer": "mother",
+    "spoken_text": "My mother is kind.",
+    "filename": "my_mother_is_kind.mp3",
+    "audio_url": "static/audio/question/my_mother_is_kind.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I have two ____.",
+    "correct_answer": "brothers",
+    "spoken_text": "I have two brothers.",
+    "filename": "i_have_two_brothers.mp3",
+    "audio_url": "static/audio/question/i_have_two_brothers.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: My sister ____ happy.",
+    "correct_answer": "is",
+    "spoken_text": "My sister is happy.",
+    "filename": "my_sister_is_happy.mp3",
+    "audio_url": "static/audio/question/my_sister_is_happy.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: Open your ____.",
+    "correct_answer": "book",
+    "spoken_text": "Open your book.",
+    "filename": "open_your_book.mp3",
+    "audio_url": "static/audio/question/open_your_book.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I write with a ____.",
+    "correct_answer": "pen",
+    "spoken_text": "I write with a pen.",
+    "filename": "i_write_with_a_pen.mp3",
+    "audio_url": "static/audio/question/i_write_with_a_pen.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: My favorite subject is ____.",
+    "correct_answer": "English",
+    "spoken_text": "My favorite subject is English.",
+    "filename": "my_favorite_subject_is_english.mp3",
+    "audio_url": "static/audio/question/my_favorite_subject_is_english.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I study ____ at school.",
+    "correct_answer": "math",
+    "spoken_text": "I study math at school.",
+    "filename": "i_study_math_at_school.mp3",
+    "audio_url": "static/audio/question/i_study_math_at_school.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: He is a ____.",
+    "correct_answer": "doctor",
+    "spoken_text": "He is a doctor.",
+    "filename": "he_is_a_doctor.mp3",
+    "audio_url": "static/audio/question/he_is_a_doctor.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I am a ____.",
+    "correct_answer": "teacher",
+    "spoken_text": "I am a teacher.",
+    "filename": "i_am_a_teacher.mp3",
+    "audio_url": "static/audio/question/i_am_a_teacher.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: I go to ____ every day.",
+    "correct_answer": "work",
+    "spoken_text": "I go to work every day.",
+    "filename": "i_go_to_work_every_day.mp3",
+    "audio_url": "static/audio/question/i_go_to_work_every_day.mp3"
+  },
+  {
+    "question_type": "fill_blank",
+    "question_text": "Complete the sentence: The meeting is ____ 9 AM.",
+    "correct_answer": "at",
+    "spoken_text": "The meeting is at 9 AM.",
+    "filename": "the_meeting_is_at_9_am.mp3",
+    "audio_url": "static/audio/question/the_meeting_is_at_9_am.mp3"
+  }
+]
