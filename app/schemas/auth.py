@@ -11,6 +11,9 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
+class GoogleLoginRequest(BaseModel):
+    id_token: str
+
 class ChangePasswordRequest(BaseModel):
     current_password: str = Field(min_length=6, max_length=100)
     new_password: str = Field(min_length=6, max_length=100)

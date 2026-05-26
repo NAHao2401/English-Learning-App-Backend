@@ -8,11 +8,17 @@ from app.schemas.auth import (
     AuthResponse,
     ChangePasswordRequest,
     ChangePasswordResponse,
+    GoogleLoginRequest,
     LoginRequest,
     RegisterRequest,
     UserResponse,
 )
-from app.services.auth_service import change_user_password, login_user, register_user
+from app.services.auth_service import (
+    change_user_password,
+    login_user,
+    login_with_google,
+    register_user,
+)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -38,6 +44,19 @@ def login(
 ):
     try:
         return login_user(db, request)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e)
+        )
+    
+@router.post("/google", response_model=AuthResponse)
+def google_login(
+    request: GoogleLoginRequest,
+    db: Session = Depends(get_db),
+):
+    try:
+        return login_with_google(db, request)
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

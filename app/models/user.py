@@ -19,7 +19,7 @@ class User(Base):
         nullable=False,
     )
 
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     avatar_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
