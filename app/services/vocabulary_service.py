@@ -53,6 +53,19 @@ def create_user_topic(db: Session, user_id: int, name: str, description: str | N
     return topic
 
 
+def delete_user_topic(db: Session, user_id: int, user_topic_id: int):
+    user_topic = (
+        db.query(UserTopic)
+        .filter(UserTopic.id == user_topic_id, UserTopic.user_id == user_id)
+        .first()
+    )
+    if user_topic is None:
+        raise ValueError("User topic not found")
+
+    db.delete(user_topic)
+    db.commit()
+
+
 def get_user_topic_vocabularies(db: Session, user_id: int, user_topic_id: int):
     return (
         db.query(Vocabulary)

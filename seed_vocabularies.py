@@ -1,6 +1,7 @@
 from app.db.session import SessionLocal
 from app.models.lesson import Topic
 from app.models.vocabulary import Vocabulary
+from advanced_vocab_topics import ADVANCED_VOCAB_TOPICS, audio_slug
 
 db = SessionLocal()
 
@@ -287,6 +288,35 @@ try:
     ]
     db.add_all(vocab_b2_arts)
     db.commit()
+
+    for topic_data in ADVANCED_VOCAB_TOPICS:
+        topic = Topic(
+            name=topic_data["name"],
+            description=topic_data["description"],
+            icon_url=topic_data["icon_url"],
+            level=topic_data["level"],
+        )
+        db.add(topic)
+        db.commit()
+        db.refresh(topic)
+
+        vocabularies = []
+        for item in topic_data["vocabularies"]:
+            slug = audio_slug(item["word"])
+            vocabularies.append(
+                Vocabulary(
+                    topic_id=topic.id,
+                    word=item["word"],
+                    meaning=item["meaning"],
+                    pronunciation=item["pronunciation"],
+                    example_sentence=item["example_sentence"],
+                    audio_url=f"static/audio/words/{slug}.mp3",
+                    example_audio_url=f"static/audio/examples/{slug}_example.mp3",
+                    difficulty=topic_data["level"],
+                )
+            )
+        db.add_all(vocabularies)
+        db.commit()
 
     print("✅ Vocabulary data seeded successfully!")
     print(f"   - Topics: {db.query(Topic).count()}")
