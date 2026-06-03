@@ -6,7 +6,6 @@ from app.crud.vocabulary_crud import (
     get_due_review_words,
     get_learned_vocab_list,
     get_new_words,
-    get_next_review_at,
     get_topic_progress_map,
     get_vocab_overview,
     rate_vocabulary,
@@ -215,11 +214,6 @@ def get_topic_progress(
     progress_map = get_topic_progress_map(db, current_user.id, topic_id)
     result: dict[int, UserVocabularyResponse] = {}
     for vocab_id, user_vocab in progress_map.items():
-        user_vocab.__dict__["next_review_at"] = (
-            get_next_review_at(user_vocab.mastery_level, user_vocab.last_reviewed_at)
-            if user_vocab.last_reviewed_at
-            else None
-        )
         result[vocab_id] = user_vocab
     return result
 

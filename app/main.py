@@ -6,6 +6,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.auth import router as auth_router
 from app.api.lesson import router as lesson_router
+from app.api.notification import router as notification_router
 from app.api.progress import router as progress_router
 from app.api.vocabulary import router as vocabulary_router
 from app.core.exception_handlers import (
@@ -19,6 +20,7 @@ from app.db.base import Base
 from app.db.session import engine
 
 from app.models.user import User
+from app.models.device_token import DeviceToken
 from app.models.user_vocabulary import SavedVocabulary, UserTopic
 from app.models.vocabulary import Vocabulary
 from app.models.lesson import Topic, Lesson, Question, AnswerOption
@@ -45,6 +47,7 @@ app.include_router(auth_router)
 app.include_router(vocabulary_router)
 app.include_router(lesson_router)
 app.include_router(progress_router)
+app.include_router(notification_router)
 
 
 @app.get("/")

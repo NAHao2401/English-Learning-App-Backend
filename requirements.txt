@@ -6,4 +6,5 @@ python-jose[cryptography]
 pwdlib[argon2]
 pydantic-settings
 email-validator
-python-multipart 
+python-multipart
+firebase-admin

@@ -3,7 +3,6 @@ from datetime import timezone
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.crud.vocabulary_crud import get_next_review_at
 from app.models.user_vocabulary import SavedVocabulary, UserTopic, UserVocabulary
 from app.models.vocabulary import Vocabulary
 from app.schemas.vocabulary import SaveVocabularyRequest
@@ -103,11 +102,6 @@ def get_batch_vocab_progress(db: Session, user_id: int, vocab_ids: list[int]):
         if user_vocab.last_reviewed_at is not None and user_vocab.last_reviewed_at.tzinfo is None:
             user_vocab.last_reviewed_at = user_vocab.last_reviewed_at.replace(tzinfo=timezone.utc)
 
-        user_vocab.__dict__["next_review_at"] = (
-            get_next_review_at(user_vocab.mastery_level, user_vocab.last_reviewed_at)
-            if user_vocab.last_reviewed_at
-            else None
-        )
         result[vocab_id] = user_vocab
 
     return result

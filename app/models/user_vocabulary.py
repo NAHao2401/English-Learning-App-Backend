@@ -58,6 +58,7 @@ class UserVocabulary(Base):
     is_saved: Mapped[bool] = mapped_column(Boolean, default=False)
     mastery_level: Mapped[int] = mapped_column(Integer, default=0)
     last_reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    next_review_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
     review_count: Mapped[int] = mapped_column(Integer, default=0)
 
     user = relationship("User", back_populates="user_vocabularies")
