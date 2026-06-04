@@ -19,6 +19,7 @@ Ghi chú:
 from __future__ import annotations
 
 import sys
+import re
 from typing import Any
 
 from sqlalchemy import inspect
@@ -36,6 +37,19 @@ from app.models.user import User
 
 TEST_USER_EMAIL = "student@example.com"
 TEST_USER_PASSWORD = "123456"
+
+
+def question_audio_text(text: str, correct: str | None = None) -> str:
+    if correct and "____" in text:
+        text = re.sub(r"^Complete the (?:sentence|phrase):\s*", "", text).strip()
+        return text.replace("____", correct).strip()
+
+    return text.strip()
+
+
+def question_audio_url(audio_text: str) -> str:
+    audio_slug = re.sub(r"[^a-z0-9]+", "_", audio_text.lower()).strip("_")
+    return f"static/audio/question/{audio_slug}.mp3"
 
 
 def mc(
@@ -68,9 +82,12 @@ def blank(
     explanation: str,
     order: int,
 ) -> dict[str, Any]:
+    audio_text = question_audio_text(text, correct)
+
     return {
         "question_type": "fill_blank",
         "question_text": text,
+        "audio_url": question_audio_url(audio_text),
         "correct_answer": correct,
         "explanation": explanation,
         "question_order": order,
@@ -98,7 +115,7 @@ SEED_DATA = [
                     mc("What does 'rice' mean?", "Cơm / gạo", "Sữa", "Trứng", "Cá", "'Rice' nghĩa là cơm hoặc gạo.", 3),
                     mc("Which word means 'thịt gà'?", "Chicken", "Fish", "Beef", "Pork", "'Chicken' nghĩa là thịt gà.", 4),
                     blank("Complete the sentence: I eat ____ for breakfast.", "bread", "'Bread' là bánh mì.", 5),
-                    blank("Complete the word: w_t_r", "water", "'Water' nghĩa là nước.", 6),
+                    blank("Complete the sentence: I drink ____ every day.", "water", "'Water' nghĩa là nước.", 6),
                 ],
             },
             {
@@ -452,6 +469,7 @@ def seed_topics_lessons_questions(db):
                     lesson_id=lesson.id,
                     question_type=question_data["question_type"],
                     question_text=question_data["question_text"],
+                    audio_url=question_data.get("audio_url"),
                     correct_answer=question_data["correct_answer"],
                     explanation=question_data["explanation"],
                     question_order=question_data["question_order"],

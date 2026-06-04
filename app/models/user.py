@@ -42,3 +42,10 @@ class User(Base):
     user_topics = relationship("UserTopic", back_populates="user", cascade="all, delete-orphan")
     saved_vocabularies = relationship("SavedVocabulary", back_populates="user", cascade="all, delete-orphan")
     user_vocabularies = relationship("UserVocabulary", back_populates="user", cascade="all, delete-orphan")
+    device_tokens = relationship("DeviceToken", back_populates="user", cascade="all, delete-orphan")
+    review_notification_state = relationship(
+        "ReviewNotificationState",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )

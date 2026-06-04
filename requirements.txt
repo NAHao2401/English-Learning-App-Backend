@@ -9,3 +9,5 @@ email-validator
 python-multipart 
 google-auth
 requests
+firebase-admin
+edge-tts

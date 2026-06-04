@@ -112,7 +112,7 @@ class LearnedVocabItem(BaseModel):
     mastery_level: int
     review_count: int
     last_reviewed_at: datetime | None
-    next_review_at: datetime | None    # computed
+    next_review_at: datetime | None
     is_due: bool                       # next_review_at <= now
 
     model_config = ConfigDict(from_attributes=True)

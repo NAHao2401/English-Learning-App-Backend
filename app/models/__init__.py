@@ -6,7 +6,9 @@ forward-reference errors for relationships declared with string names).
 """
 
 from . import lesson  # noqa: F401
+from . import device_token  # noqa: F401
 from . import vocabulary  # noqa: F401
 from . import progress  # noqa: F401
+from . import review_notification_state  # noqa: F401
 from . import user  # noqa: F401
 from . import user_vocabulary  # noqa: F401

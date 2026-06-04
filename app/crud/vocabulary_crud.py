@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta, timezone
 
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
 from app.models.progress import ReviewHistory
+from app.models.review_notification_state import ReviewNotificationState
 from app.models.user_vocabulary import UserVocabulary
 from app.models.vocabulary import Vocabulary
 
@@ -90,12 +92,14 @@ def rate_vocabulary(db: Session, user_id: int, vocabulary_id: int, rating: int) 
             is_saved=False,
             mastery_level=target,
             last_reviewed_at=now,
+            next_review_at=get_next_review_at(target, now),
             review_count=1,
         )
         db.add(user_vocab)
     else:
         user_vocab.mastery_level = target
         user_vocab.last_reviewed_at = now
+        user_vocab.next_review_at = get_next_review_at(target, now)
         user_vocab.review_count = (user_vocab.review_count or 0) + 1
 
     history = ReviewHistory(
@@ -105,16 +109,21 @@ def rate_vocabulary(db: Session, user_id: int, vocabulary_id: int, rating: int) 
         reviewed_at=now,
     )
     db.add(history)
+    db.execute(
+        insert(ReviewNotificationState)
+        .values(user_id=user_id, last_review_activity_at=now)
+        .on_conflict_do_update(
+            index_elements=[ReviewNotificationState.user_id],
+            set_={"last_review_activity_at": now},
+        )
+    )
 
     db.commit()
     db.refresh(user_vocab)
 
-    if user_vocab.last_reviewed_at is not None:
+    if user_vocab.last_reviewed_at is not None and user_vocab.next_review_at is not None:
         user_vocab.last_reviewed_at = _normalize_datetime(user_vocab.last_reviewed_at)
-        user_vocab.__dict__["next_review_at"] = get_next_review_at(
-            user_vocab.mastery_level,
-            user_vocab.last_reviewed_at,
-        )
+        user_vocab.next_review_at = _normalize_datetime(user_vocab.next_review_at)
 
     return user_vocab
 
@@ -162,28 +171,21 @@ def get_new_words(db: Session, user_id: int, topic_id: int, limit: int = 20) -> 
 def get_due_review_words(db: Session, user_id: int, topic_id: int) -> list[Vocabulary]:
     now = datetime.now(timezone.utc)
 
-    user_vocabs = (
-        db.query(UserVocabulary)
-        .join(Vocabulary, Vocabulary.id == UserVocabulary.vocabulary_id)
-        .filter(
-            Vocabulary.topic_id == topic_id,
-            UserVocabulary.user_id == user_id,
-            UserVocabulary.mastery_level > 0,
-            UserVocabulary.last_reviewed_at.isnot(None),
+    due_ids = [
+        row.vocabulary_id
+        for row in (
+            db.query(UserVocabulary.vocabulary_id)
+            .join(Vocabulary, Vocabulary.id == UserVocabulary.vocabulary_id)
+            .filter(
+                Vocabulary.topic_id == topic_id,
+                UserVocabulary.user_id == user_id,
+                UserVocabulary.mastery_level > 0,
+                UserVocabulary.next_review_at.isnot(None),
+                UserVocabulary.next_review_at <= now,
+            )
+            .all()
         )
-        .all()
-    )
-
-    due_ids: list[int] = []
-    for user_vocab in user_vocabs:
-        reviewed_at = user_vocab.last_reviewed_at
-        if reviewed_at is None:
-            continue
-        reviewed_at = _normalize_datetime(reviewed_at)
-        interval = REVIEW_INTERVALS.get(user_vocab.mastery_level, 1)
-        next_review = reviewed_at + timedelta(days=interval)
-        if next_review <= now:
-            due_ids.append(user_vocab.vocabulary_id)
+    ]
 
     if not due_ids:
         return []
@@ -214,11 +216,8 @@ def get_vocab_overview(db: Session, user_id: int) -> dict:
             level_counts[uv.mastery_level] += 1
 
         # Check if due for review
-        if uv.last_reviewed_at:
-            next_review = get_next_review_at(
-                uv.mastery_level, uv.last_reviewed_at
-            )
-            if next_review <= now:
+        if uv.next_review_at:
+            if _normalize_datetime(uv.next_review_at) <= now:
                 due_count += 1
 
     return {
@@ -258,10 +257,8 @@ def get_learned_vocab_list(db: Session, user_id: int) -> dict:
         next_review = None
         is_due = False
 
-        if uv.last_reviewed_at:
-            next_review = get_next_review_at(
-                uv.mastery_level, uv.last_reviewed_at
-            )
+        if uv.next_review_at:
+            next_review = _normalize_datetime(uv.next_review_at)
             is_due = next_review <= now
 
         if is_due:

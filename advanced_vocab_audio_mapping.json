@@ -1,0 +1,302 @@
+{
+  "scrutinize": {
+    "audio_url": "static/audio/words/scrutinize.mp3",
+    "example_audio_url": "static/audio/examples/scrutinize_example.mp3"
+  },
+  "substantiate": {
+    "audio_url": "static/audio/words/substantiate.mp3",
+    "example_audio_url": "static/audio/examples/substantiate_example.mp3"
+  },
+  "conjecture": {
+    "audio_url": "static/audio/words/conjecture.mp3",
+    "example_audio_url": "static/audio/examples/conjecture_example.mp3"
+  },
+  "discern": {
+    "audio_url": "static/audio/words/discern.mp3",
+    "example_audio_url": "static/audio/examples/discern_example.mp3"
+  },
+  "inference": {
+    "audio_url": "static/audio/words/inference.mp3",
+    "example_audio_url": "static/audio/examples/inference_example.mp3"
+  },
+  "premise": {
+    "audio_url": "static/audio/words/premise.mp3",
+    "example_audio_url": "static/audio/examples/premise_example.mp3"
+  },
+  "paradox": {
+    "audio_url": "static/audio/words/paradox.mp3",
+    "example_audio_url": "static/audio/examples/paradox_example.mp3"
+  },
+  "nuance": {
+    "audio_url": "static/audio/words/nuance.mp3",
+    "example_audio_url": "static/audio/examples/nuance_example.mp3"
+  },
+  "reconcile": {
+    "audio_url": "static/audio/words/reconcile.mp3",
+    "example_audio_url": "static/audio/examples/reconcile_example.mp3"
+  },
+  "refute": {
+    "audio_url": "static/audio/words/refute.mp3",
+    "example_audio_url": "static/audio/examples/refute_example.mp3"
+  },
+  "ambiguous": {
+    "audio_url": "static/audio/words/ambiguous.mp3",
+    "example_audio_url": "static/audio/examples/ambiguous_example.mp3"
+  },
+  "coherent": {
+    "audio_url": "static/audio/words/coherent.mp3",
+    "example_audio_url": "static/audio/examples/coherent_example.mp3"
+  },
+  "contingent": {
+    "audio_url": "static/audio/words/contingent.mp3",
+    "example_audio_url": "static/audio/examples/contingent_example.mp3"
+  },
+  "delineate": {
+    "audio_url": "static/audio/words/delineate.mp3",
+    "example_audio_url": "static/audio/examples/delineate_example.mp3"
+  },
+  "tenable": {
+    "audio_url": "static/audio/words/tenable.mp3",
+    "example_audio_url": "static/audio/examples/tenable_example.mp3"
+  },
+  "marginalize": {
+    "audio_url": "static/audio/words/marginalize.mp3",
+    "example_audio_url": "static/audio/examples/marginalize_example.mp3"
+  },
+  "redress": {
+    "audio_url": "static/audio/words/redress.mp3",
+    "example_audio_url": "static/audio/examples/redress_example.mp3"
+  },
+  "disparity": {
+    "audio_url": "static/audio/words/disparity.mp3",
+    "example_audio_url": "static/audio/examples/disparity_example.mp3"
+  },
+  "accountability": {
+    "audio_url": "static/audio/words/accountability.mp3",
+    "example_audio_url": "static/audio/examples/accountability_example.mp3"
+  },
+  "oversight": {
+    "audio_url": "static/audio/words/oversight.mp3",
+    "example_audio_url": "static/audio/examples/oversight_example.mp3"
+  },
+  "jurisdiction": {
+    "audio_url": "static/audio/words/jurisdiction.mp3",
+    "example_audio_url": "static/audio/examples/jurisdiction_example.mp3"
+  },
+  "grassroots": {
+    "audio_url": "static/audio/words/grassroots.mp3",
+    "example_audio_url": "static/audio/examples/grassroots_example.mp3"
+  },
+  "polarization": {
+    "audio_url": "static/audio/words/polarization.mp3",
+    "example_audio_url": "static/audio/examples/polarization_example.mp3"
+  },
+  "legislation": {
+    "audio_url": "static/audio/words/legislation.mp3",
+    "example_audio_url": "static/audio/examples/legislation_example.mp3"
+  },
+  "dissent": {
+    "audio_url": "static/audio/words/dissent.mp3",
+    "example_audio_url": "static/audio/examples/dissent_example.mp3"
+  },
+  "advocacy": {
+    "audio_url": "static/audio/words/advocacy.mp3",
+    "example_audio_url": "static/audio/examples/advocacy_example.mp3"
+  },
+  "equitable": {
+    "audio_url": "static/audio/words/equitable.mp3",
+    "example_audio_url": "static/audio/examples/equitable_example.mp3"
+  },
+  "entitlement": {
+    "audio_url": "static/audio/words/entitlement.mp3",
+    "example_audio_url": "static/audio/examples/entitlement_example.mp3"
+  },
+  "incentivize": {
+    "audio_url": "static/audio/words/incentivize.mp3",
+    "example_audio_url": "static/audio/examples/incentivize_example.mp3"
+  },
+  "bureaucratic": {
+    "audio_url": "static/audio/words/bureaucratic.mp3",
+    "example_audio_url": "static/audio/examples/bureaucratic_example.mp3"
+  },
+  "exculpate": {
+    "audio_url": "static/audio/words/exculpate.mp3",
+    "example_audio_url": "static/audio/examples/exculpate_example.mp3"
+  },
+  "culpability": {
+    "audio_url": "static/audio/words/culpability.mp3",
+    "example_audio_url": "static/audio/examples/culpability_example.mp3"
+  },
+  "jurisprudence": {
+    "audio_url": "static/audio/words/jurisprudence.mp3",
+    "example_audio_url": "static/audio/examples/jurisprudence_example.mp3"
+  },
+  "precedent": {
+    "audio_url": "static/audio/words/precedent.mp3",
+    "example_audio_url": "static/audio/examples/precedent_example.mp3"
+  },
+  "injunction": {
+    "audio_url": "static/audio/words/injunction.mp3",
+    "example_audio_url": "static/audio/examples/injunction_example.mp3"
+  },
+  "fiduciary": {
+    "audio_url": "static/audio/words/fiduciary.mp3",
+    "example_audio_url": "static/audio/examples/fiduciary_example.mp3"
+  },
+  "proviso": {
+    "audio_url": "static/audio/words/proviso.mp3",
+    "example_audio_url": "static/audio/examples/proviso_example.mp3"
+  },
+  "retributive": {
+    "audio_url": "static/audio/words/retributive.mp3",
+    "example_audio_url": "static/audio/examples/retributive_example.mp3"
+  },
+  "deontological": {
+    "audio_url": "static/audio/words/deontological.mp3",
+    "example_audio_url": "static/audio/examples/deontological_example.mp3"
+  },
+  "teleological": {
+    "audio_url": "static/audio/words/teleological.mp3",
+    "example_audio_url": "static/audio/examples/teleological_example.mp3"
+  },
+  "inviolable": {
+    "audio_url": "static/audio/words/inviolable.mp3",
+    "example_audio_url": "static/audio/examples/inviolable_example.mp3"
+  },
+  "abrogate": {
+    "audio_url": "static/audio/words/abrogate.mp3",
+    "example_audio_url": "static/audio/examples/abrogate_example.mp3"
+  },
+  "tort": {
+    "audio_url": "static/audio/words/tort.mp3",
+    "example_audio_url": "static/audio/examples/tort_example.mp3"
+  },
+  "mens rea": {
+    "audio_url": "static/audio/words/mens_rea.mp3",
+    "example_audio_url": "static/audio/examples/mens_rea_example.mp3"
+  },
+  "equanimity": {
+    "audio_url": "static/audio/words/equanimity.mp3",
+    "example_audio_url": "static/audio/examples/equanimity_example.mp3"
+  },
+  "epistemology": {
+    "audio_url": "static/audio/words/epistemology.mp3",
+    "example_audio_url": "static/audio/examples/epistemology_example.mp3"
+  },
+  "ontology": {
+    "audio_url": "static/audio/words/ontology.mp3",
+    "example_audio_url": "static/audio/examples/ontology_example.mp3"
+  },
+  "heuristic": {
+    "audio_url": "static/audio/words/heuristic.mp3",
+    "example_audio_url": "static/audio/examples/heuristic_example.mp3"
+  },
+  "stochastic": {
+    "audio_url": "static/audio/words/stochastic.mp3",
+    "example_audio_url": "static/audio/examples/stochastic_example.mp3"
+  },
+  "isomorphism": {
+    "audio_url": "static/audio/words/isomorphism.mp3",
+    "example_audio_url": "static/audio/examples/isomorphism_example.mp3"
+  },
+  "axiomatic": {
+    "audio_url": "static/audio/words/axiomatic.mp3",
+    "example_audio_url": "static/audio/examples/axiomatic_example.mp3"
+  },
+  "reductionism": {
+    "audio_url": "static/audio/words/reductionism.mp3",
+    "example_audio_url": "static/audio/examples/reductionism_example.mp3"
+  },
+  "emergent": {
+    "audio_url": "static/audio/words/emergent.mp3",
+    "example_audio_url": "static/audio/examples/emergent_example.mp3"
+  },
+  "entropic": {
+    "audio_url": "static/audio/words/entropic.mp3",
+    "example_audio_url": "static/audio/examples/entropic_example.mp3"
+  },
+  "taxonomic": {
+    "audio_url": "static/audio/words/taxonomic.mp3",
+    "example_audio_url": "static/audio/examples/taxonomic_example.mp3"
+  },
+  "liminality": {
+    "audio_url": "static/audio/words/liminality.mp3",
+    "example_audio_url": "static/audio/examples/liminality_example.mp3"
+  },
+  "paradigmatic": {
+    "audio_url": "static/audio/words/paradigmatic.mp3",
+    "example_audio_url": "static/audio/examples/paradigmatic_example.mp3"
+  },
+  "phenomenology": {
+    "audio_url": "static/audio/words/phenomenology.mp3",
+    "example_audio_url": "static/audio/examples/phenomenology_example.mp3"
+  },
+  "dialectical": {
+    "audio_url": "static/audio/words/dialectical.mp3",
+    "example_audio_url": "static/audio/examples/dialectical_example.mp3"
+  },
+  "metacognition": {
+    "audio_url": "static/audio/words/metacognition.mp3",
+    "example_audio_url": "static/audio/examples/metacognition_example.mp3"
+  },
+  "stakeholder": {
+    "audio_url": "static/audio/words/stakeholder.mp3",
+    "example_audio_url": "static/audio/examples/stakeholder_example.mp3"
+  },
+  "benchmark": {
+    "audio_url": "static/audio/words/benchmark.mp3",
+    "example_audio_url": "static/audio/examples/benchmark_example.mp3"
+  },
+  "revenue": {
+    "audio_url": "static/audio/words/revenue.mp3",
+    "example_audio_url": "static/audio/examples/revenue_example.mp3"
+  },
+  "forecast": {
+    "audio_url": "static/audio/words/forecast.mp3",
+    "example_audio_url": "static/audio/examples/forecast_example.mp3"
+  },
+  "proposal": {
+    "audio_url": "static/audio/words/proposal.mp3",
+    "example_audio_url": "static/audio/examples/proposal_example.mp3"
+  },
+  "compromise": {
+    "audio_url": "static/audio/words/compromise.mp3",
+    "example_audio_url": "static/audio/examples/compromise_example.mp3"
+  },
+  "leverage": {
+    "audio_url": "static/audio/words/leverage.mp3",
+    "example_audio_url": "static/audio/examples/leverage_example.mp3"
+  },
+  "contingency": {
+    "audio_url": "static/audio/words/contingency.mp3",
+    "example_audio_url": "static/audio/examples/contingency_example.mp3"
+  },
+  "procurement": {
+    "audio_url": "static/audio/words/procurement.mp3",
+    "example_audio_url": "static/audio/examples/procurement_example.mp3"
+  },
+  "retention": {
+    "audio_url": "static/audio/words/retention.mp3",
+    "example_audio_url": "static/audio/examples/retention_example.mp3"
+  },
+  "turnover": {
+    "audio_url": "static/audio/words/turnover.mp3",
+    "example_audio_url": "static/audio/examples/turnover_example.mp3"
+  },
+  "liability": {
+    "audio_url": "static/audio/words/liability.mp3",
+    "example_audio_url": "static/audio/examples/liability_example.mp3"
+  },
+  "margin": {
+    "audio_url": "static/audio/words/margin.mp3",
+    "example_audio_url": "static/audio/examples/margin_example.mp3"
+  },
+  "deliverable": {
+    "audio_url": "static/audio/words/deliverable.mp3",
+    "example_audio_url": "static/audio/examples/deliverable_example.mp3"
+  },
+  "constraint": {
+    "audio_url": "static/audio/words/constraint.mp3",
+    "example_audio_url": "static/audio/examples/constraint_example.mp3"
+  }
+}

@@ -6,7 +6,6 @@ from app.crud.vocabulary_crud import (
     get_due_review_words,
     get_learned_vocab_list,
     get_new_words,
-    get_next_review_at,
     get_topic_progress_map,
     get_vocab_overview,
     rate_vocabulary,
@@ -33,6 +32,7 @@ from app.services.lesson_service import get_topics
 from app.services.vocabulary_service import (
     get_batch_vocab_progress,
     create_user_topic,
+    delete_user_topic,
     get_all_vocabularies,
     get_user_topic_vocabularies,
     get_user_topics,
@@ -86,6 +86,20 @@ def create_topic(
         return create_user_topic(db, current_user.id, request.name, request.description)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@router.delete("/user-topics/{user_topic_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_topic(
+    user_topic_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        delete_user_topic(db, current_user.id, user_topic_id)
+    except ValueError as exc:
+        if str(exc) == "User topic not found":
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
 
 @router.get("/user-topics/{user_topic_id}/vocabularies")
@@ -215,11 +229,6 @@ def get_topic_progress(
     progress_map = get_topic_progress_map(db, current_user.id, topic_id)
     result: dict[int, UserVocabularyResponse] = {}
     for vocab_id, user_vocab in progress_map.items():
-        user_vocab.__dict__["next_review_at"] = (
-            get_next_review_at(user_vocab.mastery_level, user_vocab.last_reviewed_at)
-            if user_vocab.last_reviewed_at
-            else None
-        )
         result[vocab_id] = user_vocab
     return result
 
