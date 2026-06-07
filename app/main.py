@@ -26,6 +26,7 @@ from app.models.vocabulary import Vocabulary
 from app.models.lesson import Topic, Lesson, Question, AnswerOption
 from app.models.progress import Progress, XpHistory, LessonSubmission
 from app.core.logging import setup_logging
+from app.api import speaking
 
 setup_logging()
 
@@ -48,7 +49,7 @@ app.include_router(vocabulary_router)
 app.include_router(lesson_router)
 app.include_router(progress_router)
 app.include_router(notification_router)
-
+app.include_router(speaking.router)
 
 @app.get("/")
 def root():

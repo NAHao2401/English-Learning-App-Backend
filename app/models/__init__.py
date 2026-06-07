@@ -12,3 +12,4 @@ from . import progress  # noqa: F401
 from . import review_notification_state  # noqa: F401
 from . import user  # noqa: F401
 from . import user_vocabulary  # noqa: F401
+from . import speaking  # noqa: F401
